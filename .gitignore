@@ -1,0 +1,11 @@
+# dev-env
+.idea/
+*.iml
+
+# C extensions
+*.so
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
