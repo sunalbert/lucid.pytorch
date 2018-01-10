@@ -14,8 +14,16 @@ class Extractor(object):
         self.grads.append(grad)
 
     def __call__(self, x):
-        self.grads = []
+        outs = []
+        for name, module in self.base_model._modules.items():
+            x = module(x)
+            if name in self.target_layers:
+                x.register_hook(self.save_graident)
+                outs.append(x)
+        return outs, x
 
-        for 
+
+
+
 
 
