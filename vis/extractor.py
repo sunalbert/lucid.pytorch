@@ -10,17 +10,21 @@ class Extractor(object):
         self.target_layers = target_layers
         self.grads = []
 
-    def save_graident(self, grad):
+    def save_grads(self, grad):
         self.grads.append(grad)
 
+    def get_grads(self):
+        return self.grads
+
     def __call__(self, x):
-        outs = []
+        inter_outs = []
+        self.grads = []
         for name, module in self.base_model._modules.items():
             x = module(x)
             if name in self.target_layers:
-                x.register_hook(self.save_graident)
-                outs.append(x)
-        return outs, x
+                x.register_hook(self.save_grads)
+                inter_outs.append(x)
+        return inter_outs, x
 
 
 
