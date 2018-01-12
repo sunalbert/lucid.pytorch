@@ -112,7 +112,11 @@ class GradCam(object):
             one_hot_mask = torch.sum(one_hot_mask.cuda() * final_out)
         else:
             one_hot_mask = torch.sum(one_hot_mask * final_out)
-        
+
+        self.model.zero_grad()
+        one_hot_mask.backward(retain_variables=True)
+
+
 
 
 
