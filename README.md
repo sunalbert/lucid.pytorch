@@ -1,5 +1,5 @@
 # Visualization Toolkit for Pytorch
-Pytorch-vis is a a neural network visualization toolkit for pytorch, which aims to provide easy and effective ways to visualize the trained models in pytorch. Pytorch-vis can be used seamlessly with pytorch, so you can visualize and have a deep insight into the trained model without pain.
+Pytorch-vis is a a neural network visualization toolkit for pytorch, which aims to provide easy and effective ways to visualize the trained models in pytorch. Pytorch-vis can be used seamlessly with pytorch, so you can visualize and have a deep insight into the trained model without pain. Please go to [documentation](https://sunalbert.github.io/pytorch-vis/) for details.
 
 
 # TODOs
@@ -16,3 +16,6 @@ pytorch-vis is inspired by following greatful projects:
 - quiver https://keplr-io.github.io/quiver/
 - pytorch-cnn-visualization https://github.com/utkuozbulak/pytorch-cnn-visualizations
 Thanks to the authors of these projects.
+
+# License
+This project is under MIT LICENSE
