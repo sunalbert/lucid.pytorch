@@ -77,8 +77,13 @@ class GuidedBackProModel(object):
         return result[0]
 
 
+# TODO: Now the GradCam only support visualize one layer at the same time
 class GradCam(object):
+    """GradCam visualization technique
+    """
     def __init__(self, model, target_layers, use_cuda):
+        assert len(target_layers) == 1
+
         self.cuda = use_cuda
         if self.cuda:
             self.model = model.cuda()
@@ -95,6 +100,8 @@ class GradCam(object):
         :param index:
         :return:
         """
+        assert x.size(0) == 1
+
         if self.cuda:
             inter_outs, final_out = self.extractor(x.cuda())
         else:
@@ -115,6 +122,9 @@ class GradCam(object):
 
         self.model.zero_grad()
         one_hot_mask.backward(retain_variables=True)
+
+        target_grads = self.extractor.get_grads()
+
 
 
 
