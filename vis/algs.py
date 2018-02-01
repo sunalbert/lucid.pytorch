@@ -1,10 +1,17 @@
 import torch
+import numpy as np
 from torch.autograd import Variable
 from vis.activations import GuidedBackProRelu
 from vis.extractor import Extractor
 
 
 def replace_relu(module):
+    """
+    Replace all the ReLU activation function
+    with GuidedBackProRelu
+    :param module:
+    :return:
+    """
     for idx, m in module._modules.items():
         if m.__class__.__name__ == 'ReLU':
             module._modules[idx] = GuidedBackProRelu()
@@ -13,6 +20,10 @@ def replace_relu(module):
 
 
 class VanillaBackProModel(object):
+    """
+    Vanilla Backpropagation Model for
+    visualiazation
+    """
     def __init__(self, model, use_cuda):
         self.model = model.eval()
         if use_cuda:
@@ -20,26 +31,40 @@ class VanillaBackProModel(object):
         self.cuda = use_cuda
 
     def __call__(self, x, index=None):
+        """
+        Perform vanilla backpropagation visualization model
+        :param x: input Variable
+        :param index:
+        :return:
+        """
         if self.cuda:
-            out = self.model(Variable(x, requires_grad=True).cuda(), )
+            out = self.model(x.cuda())
         else:
-            out = self.model(Variable(x))
-        out = out.view(-1)
+            out = self.model(x)
+        # out = out.view(-1)
 
         if index is None:
-            index = int(torch.max(out))
-        one_hot_mask = torch.zeros(out.size())
-        one_hot_mask[index] = 1
-        one_hot_mask = Variable(one_hot_mask)
+            if self.cuda:
+                index = int(torch.max(out).data.cpu().numpy())
+            else:
+                index = int(torch.max(out).data.numpy()) # TODO: could be omitted
+
+        # one_hot_mask = torch.zeros(out.size())
+        # one_hot_mask[index] = 1
+        one_hot_mask = np.zeros((1, out.size()[-1]), dtype=np.float32)
+        one_hot_mask[0][index] = 1
+        one_hot_mask = Variable(torch.from_numpy(one_hot_mask))
+
+        # one_hot_mask = Variable(one_hot_mask, requires_grad=True)
+
         if self.cuda:
             one_hot_mask = torch.sum(one_hot_mask.cuda() * out)
         else:
             one_hot_mask = torch.sum(one_hot_mask * out)
 
         # backpropagation
-        self.model.zero_grad()
-        one_hot_mask.backward(retain_graph=True)
-
+        # self.model.zero_grad()
+        one_hot_mask.backward()
         result = x.grad.data.cpu().numpy()
         return result[0]
 
