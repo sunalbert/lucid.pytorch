@@ -2,15 +2,16 @@ import os
 import cv2
 import torch
 import numpy as np
-from torch.autograd import Variable
 import torchvision.models as models
-from vis.algs import VanillaBackProModel
-from vis.utils import save_cam_img, save_grad_img
+from torch.autograd import Variable
 
-os.environ['CUDA_VISIBLE_DEVICES']='7'
+from vis.utils import save_cam_img, save_grad_img
+from vis.algs import GuidedBackProReLUModel
+
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 
 img_path = './imgs/cat_dog.png'
-
 
 def preprocess(img):
     """
@@ -34,7 +35,7 @@ def preprocess(img):
 
 
 def visualization():
-    vis_model = VanillaBackProModel(models.vgg19(pretrained=True), use_cuda=True)
+    vis_model = GuidedBackProReLUModel(models.vgg19(pretrained=True), use_cuda=True)
     img = cv2.imread(img_path)
     img = np.float32(cv2.resize(img, (224, 224))) / 255
     input_img = preprocess(img)

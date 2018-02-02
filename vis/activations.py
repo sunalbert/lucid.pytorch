@@ -14,6 +14,9 @@ class GuidedBackProRelu(Function):
         grad_input[input < 0] = 0
         return grad_input
 
+    def named_parameters(self, memo, submodule_prefix):
+        return []
+
 
 class DeconvnetRelu(Function):
     def forward(self, input):
